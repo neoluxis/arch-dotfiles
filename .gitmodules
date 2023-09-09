@@ -1,0 +1,3 @@
+[submodule "dwm-i"]
+	path = dwm-i
+	url = https://github.com/DreamMaoMao/dwm.git
