@@ -215,8 +215,8 @@ bindsym $mod+d exec --no-startup-id rofi -show drun
 bindsym $mod+Ctrl+d exec --no-startup-id rofi -show window
 
 # Gaps
-gaps inner 6
-gaps outer 4
+gaps inner 3
+gaps outer 2
 
 # no title bar
 for_window [class="^.*"] border pixel 2
