@@ -124,3 +124,4 @@ source '/usr/share/zsh/plugins/zsh-thefuck-git/zsh-thefuck.plugin.zsh'
 PATH=/home/neolux/.local/bin:$PATH
 
 ccpfetch
+
