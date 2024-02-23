@@ -119,6 +119,9 @@ alias ccp='neofetch --source ~/.config/neofetch/ccp_ascii'
 alias vdwm='cd ~/dwm/; nvim config.h; cd -'
 alias vi3='nvim ~/.config/i3/config'
 alias code='code-insiders'
+alias _uptime='/bin/uptime'
+alias uptime='/home/neolux/Documents/prog/uptime/_uptime 30'
+alias pv='python -m venv'
 
 source '/usr/share/zsh/plugins/zsh-thefuck-git/zsh-thefuck.plugin.zsh'
 PATH=/home/neolux/.local/bin:$PATH
