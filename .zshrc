@@ -75,6 +75,7 @@ plugins=(
     zsh-autosuggestions
     zsh-syntax-highlighting
     z
+    vi-mode
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -125,6 +126,8 @@ alias pv='python -m venv'
 
 source '/usr/share/zsh/plugins/zsh-thefuck-git/zsh-thefuck.plugin.zsh'
 PATH=/home/neolux/.local/bin:$PATH
+
+# if [ -f ~/.Xmodmap ]; then xmodmap ~/.Xmodmap; fi
 
 ccpfetch
 
