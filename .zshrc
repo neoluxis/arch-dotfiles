@@ -127,7 +127,7 @@ alias pv='python -m venv'
 source '/usr/share/zsh/plugins/zsh-thefuck-git/zsh-thefuck.plugin.zsh'
 PATH=/home/neolux/.local/bin:$PATH
 
-# if [ -f ~/.Xmodmap ]; then xmodmap ~/.Xmodmap; fi
+if [ -f ~/.Xmodmap ]; then xmodmap ~/.Xmodmap; fi
 
 ccpfetch
 
