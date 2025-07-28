@@ -190,21 +190,21 @@ bar {
 }
 
 # Lock Screen
-bindsym $mod+x exec /home/neolux/.config/scripts/lock
+#bindsym $mod+x exec /home/neolux/.config/scripts/lock
 
 # Exec on startup
 # Fcitx5
 exec --no-startup-id fcitx5
 # wallpaper feh
-exec_always feh --bg-fill /home/neolux/Pictures/Wallpapers/blackarch-dm.png
+exec_always feh --bg-fill /home/neolux/Pictures/Wallpapers/i-want-to-improve-so-much.png
 # picom 混成器
 exec --no-startup-id picom -b
 # Numlock
 exec_always --no-startup-id numlockx on 
 # clockboard manager
-exec --no-startup-id copyq & 
+#exec --no-startup-id copyq & 
 # notification manager
-exec --no-startup-id dunst &
+#exec --no-startup-id dunst &
 
 
 # Alacritty
@@ -227,6 +227,7 @@ bindsym XF86MonBrightnessUp exec xbacklight -inc 5
 bindsym XF86MonBrightnessDown exec xbacklight -dec 5
 
 # Pulseaudio set volumns
+
 # bindsym XF86AudioRaiseVolume
 
 # use polybar
