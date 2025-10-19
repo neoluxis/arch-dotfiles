@@ -1,0 +1,25 @@
+alias ll='ls -lah'
+alias cls='clear'
+alias fetch='neofetch | lolcat'
+alias paclean='paru -Scc'
+alias pacleanne='paru $(paru -Qtdq) -Rdds'
+alias pacleanna='paclean; pacleanne || echo No Package got to clean'
+alias ccpfetch='neofetch --source ~/.config/neofetch/ccp_ascii | lolcat'
+alias ccp='neofetch --source ~/.config/neofetch/ccp_ascii'
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias open='xdg-open'
+
+alias activ='conda activate'
+alias deact='conda deactivate'
+
+alias zhb="z hexo_blog"
+alias zbt="z blog-texts"
+
+alias dls='distrobox ls'
+alias den='distrobox enter'
+alias dstp='distrobox stop'
+alias drm='distrobox rm'
+
+alias gox5='docker run -it --rm --gpus all --shm-size=15g -v /home/neolux/workspace/rdk/ai_toolchain_package:/open_explorer -v /home/neolux/workspace/rdk/datasets:/data openexplorer/ai_toolchain_ubuntu_20_x5_gpu:v1.2.6'
+#alias gox3='docker run -it --rm -v /home/neolux/workspace/rdk/ai_toolchain_package:/open_explorer -v /home/neolux/workspace/rdk/datasets:/data openexplorer/ai_toolchain_ubuntu_20_x3j5_gpu:v1.0.0'
