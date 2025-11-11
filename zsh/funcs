@@ -146,18 +146,21 @@ tasker() {
     local cmd=""
     local script=""
     local to=""
+    local screen_mode=0
 
     # 解析参数
     while [[ $# -gt 0 ]]; do
         case "$1" in
             -c) cmd="$2"; shift 2;;
             -t) to="$2"; shift 2;;
+            --screen) screen_mode=1; shift;;
             -h)
                 echo "Usage:"
-                echo "  tasker [script_path] [-c \"command\"] [-t \"recipient\"] [-h]"
+                echo "  tasker [script_path] [-c \"command\"] [-t \"recipient\"] [--screen] [-h]"
                 echo "  script_path   Path to script to execute (optional if -c is used)"
                 echo "  -c            Command to execute"
                 echo "  -t            Email address to send report to (overrides config)"
+                echo "  --screen      Show output in terminal while executing"
                 echo "  -h            Show this help message"
                 return 0
                 ;;
@@ -181,7 +184,7 @@ tasker() {
         return 1
     fi
 
-    # 检查脚本是否存在（如果提供了脚本）
+    # 检查脚本是否存在
     if [[ -n "$script" && ! -f "$script" ]]; then
         echo "Error: script '$script' does not exist."
         return 1
@@ -199,7 +202,7 @@ tasker() {
         fi
     fi
 
-    # 异步执行
+    # 创建异步脚本
     local async_script
     async_script=$(mktemp)
     cat > "$async_script" <<'EOF'
@@ -207,6 +210,7 @@ tasker() {
 cmd="$CMD"
 script="$SCRIPT"
 to="$TO"
+screen_mode="$SCREEN_MODE"
 
 status=0
 output_file=$(mktemp)
@@ -214,26 +218,33 @@ output_file=$(mktemp)
 # 构建任务描述
 if [[ -n "$cmd" ]]; then
     exec_desc="Command: $cmd"
-    bash -c "$cmd" > "$output_file" 2>&1
-    status=$?
+    if [[ "$screen_mode" -eq 1 ]]; then
+        bash -c "$cmd" | tee "$output_file"
+        status=${PIPESTATUS[0]}
+    else
+        bash -c "$cmd" > "$output_file" 2>&1
+        status=$?
+    fi
 elif [[ -n "$script" ]]; then
     fullpath=$(realpath "$script" 2>/dev/null || echo "$script")
     exec_desc="Script: $fullpath"
-    bash "$script" > "$output_file" 2>&1
-    status=$?
+    if [[ "$screen_mode" -eq 1 ]]; then
+        bash "$script" | tee "$output_file"
+        status=${PIPESTATUS[0]}
+    else
+        bash "$script" > "$output_file" 2>&1
+        status=$?
+    fi
 fi
 
-# 输出最后30行作为摘要
 output_preview=$(tail -n 30 "$output_file")
 
-# 邮件主题
 if [[ $status -eq 0 ]]; then
     subject="任务完成（成功）"
 else
     subject="任务完成（失败）"
 fi
 
-# 发送邮件
 {
     echo "Subject: $subject"
     echo "To: $to"
@@ -257,10 +268,16 @@ EOF
     CMD="$cmd"
     SCRIPT="$script"
     TO="$to"
+    SCREEN_MODE="$screen_mode"
 
-    # 异步执行，不阻塞终端，不输出任何无用信息
-    nohup env CMD="$CMD" SCRIPT="$SCRIPT" TO="$TO" bash "$async_script" >/dev/null 2>&1 </dev/null &
-    disown
-
-    echo "Task started in background, email will be sent to $to"
+    if [[ "$screen_mode" -eq 1 ]]; then
+        # 前景执行
+        env CMD="$CMD" SCRIPT="$SCRIPT" TO="$TO" SCREEN_MODE="$SCREEN_MODE" bash "$async_script"
+    else
+        # 异步后台执行，不阻塞终端，不输出无用信息
+        nohup env CMD="$CMD" SCRIPT="$SCRIPT" TO="$TO" SCREEN_MODE="$SCREEN_MODE" bash "$async_script" >/dev/null 2>&1 </dev/null &
+        disown
+        echo "Task started in background, email will be sent to $to"
+    fi
 }
+
