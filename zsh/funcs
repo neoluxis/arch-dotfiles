@@ -126,6 +126,7 @@ nlx_init_pyenv() {
     eval "$(pyenv init - zsh)"
 }
 
+# 环境初始化
 initer() {
 	if [ "$1" = "ros2" ]; then
 		nlx_init_ros2
@@ -140,3 +141,126 @@ initer() {
 	fi
 }
 
+# 任务管理，完成任务后邮件通知
+tasker() {
+    local cmd=""
+    local script=""
+    local to=""
+
+    # 解析参数
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -c) cmd="$2"; shift 2;;
+            -t) to="$2"; shift 2;;
+            -h)
+                echo "Usage:"
+                echo "  tasker [script_path] [-c \"command\"] [-t \"recipient\"] [-h]"
+                echo "  script_path   Path to script to execute (optional if -c is used)"
+                echo "  -c            Command to execute"
+                echo "  -t            Email address to send report to (overrides config)"
+                echo "  -h            Show this help message"
+                return 0
+                ;;
+            --) shift; break;;
+            -*) echo "Unknown option: $1"; echo "Use -h for help"; return 1;;
+            *)  # 第一个非选项参数当作脚本路径
+                if [[ -z "$script" ]]; then
+                    script="$1"
+                else
+                    echo "Unknown argument: $1"
+                    return 1
+                fi
+                shift
+                ;;
+        esac
+    done
+
+    # 必须提供命令或脚本
+    if [[ -z "$cmd" && -z "$script" ]]; then
+        echo "Error: no command or script specified. Use -c or provide a script path"
+        return 1
+    fi
+
+    # 检查脚本是否存在（如果提供了脚本）
+    if [[ -n "$script" && ! -f "$script" ]]; then
+        echo "Error: script '$script' does not exist."
+        return 1
+    fi
+
+    # 收件人
+    if [[ -z "$to" ]]; then
+        if [[ -f "$HOME/.config/tasker/config.yaml" ]]; then
+            to=$(grep -E '^target_addr:' "$HOME/.config/tasker/config.yaml" | awk '{print $2}')
+        fi
+        if [[ -z "$to" ]]; then
+            echo "Error: No target email specified and failed to read from config."
+            echo "Please provide -t or set target_addr in ~/.config/tasker/config.yaml"
+            return 1
+        fi
+    fi
+
+    # 异步执行
+    local async_script
+    async_script=$(mktemp)
+    cat > "$async_script" <<'EOF'
+#!/usr/bin/env bash
+cmd="$CMD"
+script="$SCRIPT"
+to="$TO"
+
+status=0
+output_file=$(mktemp)
+
+# 构建任务描述
+if [[ -n "$cmd" ]]; then
+    exec_desc="Command: $cmd"
+    bash -c "$cmd" > "$output_file" 2>&1
+    status=$?
+elif [[ -n "$script" ]]; then
+    fullpath=$(realpath "$script" 2>/dev/null || echo "$script")
+    exec_desc="Script: $fullpath"
+    bash "$script" > "$output_file" 2>&1
+    status=$?
+fi
+
+# 输出最后30行作为摘要
+output_preview=$(tail -n 30 "$output_file")
+
+# 邮件主题
+if [[ $status -eq 0 ]]; then
+    subject="任务完成（成功）"
+else
+    subject="任务完成（失败）"
+fi
+
+# 发送邮件
+{
+    echo "Subject: $subject"
+    echo "To: $to"
+    echo
+    echo "Task Description:"
+    echo "$exec_desc"
+    echo
+    echo "Exit Status: $status"
+    echo
+    echo "Output Preview (last 30 lines):"
+    echo "$output_preview"
+    echo
+    echo "Full output saved at: $output_file"
+} | msmtp -t "$to"
+
+rm -f "$async_script"
+EOF
+
+    chmod +x "$async_script"
+
+    CMD="$cmd"
+    SCRIPT="$script"
+    TO="$to"
+
+    # 异步执行，不阻塞终端，不输出任何无用信息
+    nohup env CMD="$CMD" SCRIPT="$SCRIPT" TO="$TO" bash "$async_script" >/dev/null 2>&1 </dev/null &
+    disown
+
+    echo "Task started in background, email will be sent to $to"
+}
