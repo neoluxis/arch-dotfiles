@@ -91,7 +91,7 @@ source $ZSH/oh-my-zsh.sh
 # if [[ -n $SSH_CONNECTION ]]; then
 #   export EDITOR='vim'
 # else
-#   export EDITOR='mvim'
+#   export EDITOR='kate'
 # fi
 
 # Compilation flags
@@ -109,9 +109,11 @@ source $ZSH/oh-my-zsh.sh
 
 source /home/neolux/dotfiles/zsh/alias
 source /home/neolux/dotfiles/zsh/envs
-source /home/neolux/dotfiles/zsh/funcs
+source /home/neolux/dotfiles/zsh/tasker
+source /home/neolux/dotfiles/zsh/initer
+source /home/neolux/dotfiles/zsh/passer
+
+neofetch
 
 #initer ros2
 initer conda
-
-neofetch

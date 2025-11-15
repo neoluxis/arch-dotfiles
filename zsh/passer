@@ -1,0 +1,75 @@
+# 配置命令免密
+nopass() {
+    local sudoer_dir="/etc/sudoers.d"
+
+    if [ -z "$1" ]; then
+        # 所有命令免密
+        local sudoer_file="$sudoer_dir/nopass-all"
+        echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee "$sudoer_file" >/dev/null \
+            && echo "已为 $USER 设置所有命令免密 sudo"
+        return 0
+    fi
+
+    local cmd_path
+    cmd_path=$(command -v "$1" 2>/dev/null)
+
+    if [ -z "$cmd_path" ]; then
+        echo "错误: 找不到命令 $1"
+        return 1
+    fi
+
+    local sudoer_file="$sudoer_dir/nopass-$1"
+
+    echo "$USER ALL=(ALL) NOPASSWD: $cmd_path" | sudo tee "$sudoer_file" >/dev/null \
+        && echo "已为 $1 ($cmd_path) 设置免密 sudo"
+}
+
+# 取消命令免密
+setpass() {
+    local sudoer_dir="/etc/sudoers.d"
+
+    if [ -z "$1" ]; then
+        # 取消所有免密
+        sudo find "$sudoer_dir" -maxdepth 1 -type f -name 'nopass-*' -delete
+        sudo rm -f "$sudoer_dir/nopass-all"
+
+        if [ -n "$(sudo ls "$sudoer_dir" | grep '^nopass-')" ] || sudo test -f "$sudoer_dir/nopass-all"; then
+            echo "错误: 部分免密未能删除"
+        else
+            echo "已取消所有免密 sudo"
+        fi
+        return 0
+    fi
+
+    local sudoer_file="$sudoer_dir/nopass-$1"
+
+    if sudo test -f "$sudoer_file"; then
+        sudo rm -f "$sudoer_file" \
+            && echo "已取消 $1 的免密 sudo"
+    else
+        echo "错误: 没有为 $1 设置免密"
+        return 1
+    fi
+}
+
+# 查看免密的命令
+listpass() {
+    local sudoer_dir="/etc/sudoers.d"
+    local files
+    files=$(sudo ls "$sudoer_dir" 2>/dev/null | grep '^nopass-' || true)
+
+    if [ -z "$files" ]; then
+        echo "当前没有配置免密命令"
+        return 0
+    fi
+
+    echo "当前免密配置："
+    for f in $files; do
+        if [ "$f" = "nopass-all" ]; then
+            echo "  [ALL] 所有命令免密"
+        else
+            echo "  ${f#nopass-}"
+        fi
+    done
+}
+
