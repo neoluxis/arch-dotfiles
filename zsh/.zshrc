@@ -113,7 +113,13 @@ source /home/neolux/dotfiles/zsh/tasker
 source /home/neolux/dotfiles/zsh/initer
 source /home/neolux/dotfiles/zsh/passer
 
-neofetch
-
 #initer ros2
 initer conda
+
+# e: script exit while any cmd exit with non-zero code
+# u: script exit while using undefined var
+# o pipefail: one sub-cmd fail causes whole pipe fail. last cmd status by default
+# set -euo pipefail
+
+neofetch
+
