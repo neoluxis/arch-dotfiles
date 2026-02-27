@@ -1,0 +1,20 @@
+# colored log functions
+function log() {
+    local timestamp
+    timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+    printf '[%s] %b\n' "$timestamp" "$*"
+}
+
+function log_debug() {
+    log "\033[36m[DEBUG]\033[0m $*"
+}
+function log_info() {
+    log "\033[32m[INFO]\033[0m $*"
+}
+function log_warning() {
+    log "\033[33m[WARNING]\033[0m $*"
+}
+function log_error() {
+    log "\033[31m[ERROR]\033[0m $*"
+}
+
