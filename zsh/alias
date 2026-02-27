@@ -1,8 +1,8 @@
 alias ll='ls -lah'
 alias cls='clear'
 alias fetch='neofetch | lolcat'
-alias paclean='paru -Scc'
-alias pacleanne='paru $(paru -Qtdq) -Rdds'
+alias paclean='yay -Scc'
+alias pacleanne='yay $(paru -Qtdq) -Rdds'
 alias pacleanna='paclean; pacleanne || echo No Package got to clean'
 alias ccpfetch='neofetch --source ~/.config/neofetch/ccp_ascii | lolcat'
 alias ccp='neofetch --source ~/.config/neofetch/ccp_ascii'
@@ -23,3 +23,6 @@ alias drm='distrobox rm'
 
 alias gox5='docker run -it --rm --gpus all --shm-size=15g -v /home/neolux/workspace/rdk/ai_toolchain_package:/open_explorer -v /home/neolux/workspace/rdk/datasets:/data openexplorer/ai_toolchain_ubuntu_20_x5_gpu:v1.2.6'
 #alias gox3='docker run -it --rm -v /home/neolux/workspace/rdk/ai_toolchain_package:/open_explorer -v /home/neolux/workspace/rdk/datasets:/data openexplorer/ai_toolchain_ubuntu_20_x3j5_gpu:v1.0.0'
+
+# Mingw64 Wine
+alias mwin=x86_64-w64-mingw32-wine
