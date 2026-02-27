@@ -52,6 +52,14 @@ nlx_init_pyenv() {
     eval "$(pyenv init - zsh)"
 }
 
+nlx_init_cross_win() {
+    export PATH="$HOME/.local/mingw64/mingw64/bin:$PATH"
+    export PKG_CONFIG_PATH="$HOME/.local/mingw64/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
+    export CMAKE_PREFIX_PATH="$HOME/.local/mingw64/mingw64"
+
+    echo "Windows cross-compilation environment activated."
+}
+
 # 环境初始化
 initer() {
 	if [ "$1" = "ros2" ]; then
@@ -62,6 +70,8 @@ initer() {
         nlx_init_pyenv
 	elif [ "$1" = "oneapi" ]; then
         nlx_init_oneapi
+    elif [ "$1" = "cross_win" ]; then
+        nlx_init_cross_win
 	else
 		echo "Usage: initer <ros2|conda|oneapi> [-h]"
 	fi
