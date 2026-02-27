@@ -1,0 +1,48 @@
+# parse cmdline parameter and store them in variables
+# --var         -> var=true
+# --no-var      -> var=false
+# --var=xxx     -> var=xxx
+# --var-a       -> var_a=true
+function parse_args() {
+    local arg key value
+
+    for arg in "$@"; do
+        case "$arg" in
+            --no-*=*)
+                echo "Invalid argument: $arg" >&2
+                exit 1
+                ;;
+            --no-*)
+                key="${arg#--no-}"
+                ;;
+            --*=*)
+                key="${arg#--}"
+                key="${key%%=*}"
+                value="${arg#*=}"
+                ;;
+            --*)
+                key="${arg#--}"
+                ;;
+            *)
+                echo "Unknown argument: $arg" >&2
+                exit 1
+                ;;
+        esac
+
+        key="${key//-/_}"
+
+        if [[ ! "$key" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
+            echo "Invalid variable name: $key" >&2
+            exit 1
+        fi
+
+        if [[ "$arg" == --no-* ]]; then
+            printf -v "$key" '%s' false
+        elif [[ "$arg" == --*=* ]]; then
+            printf -v "$key" '%s' "$value"
+        else
+            printf -v "$key" '%s' true
+        fi
+    done
+}
+
