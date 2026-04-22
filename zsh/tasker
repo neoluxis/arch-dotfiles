@@ -70,26 +70,31 @@ to="$TO"
 screen_mode="$SCREEN_MODE"
 
 status=0
-output_file=$(mktemp)
+timestamp=$(date +%Y%m%d_%H%M%S)
+output_file="/tmp/tasker_$timestamp.log"
 
 # 构建任务描述
 if [[ -n "$cmd" ]]; then
     exec_desc="Command: $cmd"
     if [[ "$screen_mode" -eq 1 ]]; then
-        bash -c "$cmd" | tee "$output_file"
+        echo "# $exec_desc" | tee -a "$output_file"
+        bash -c "$cmd" | tee -a "$output_file"
         status=${PIPESTATUS[0]}
     else
-        bash -c "$cmd" > "$output_file" 2>&1
+        echo "# $exec_desc" > "$output_file" 2>&1
+        bash -c "$cmd" >> "$output_file" 2>&1
         status=$?
     fi
 elif [[ -n "$script" ]]; then
     fullpath=$(realpath "$script" 2>/dev/null || echo "$script")
     exec_desc="Script: $fullpath"
     if [[ "$screen_mode" -eq 1 ]]; then
-        bash "$script" | tee "$output_file"
+        echo "# $exec_desc" | tee -a "$output_file"
+        bash "$script" | tee -a "$output_file"
         status=${PIPESTATUS[0]}
     else
-        bash "$script" > "$output_file" 2>&1
+        echo "# $exec_desc" > "$output_file" 2>&1
+        bash "$script" >> "$output_file" 2>&1
         status=$?
     fi
 fi
