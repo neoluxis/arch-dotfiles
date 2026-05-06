@@ -112,6 +112,7 @@ source /home/neolux/dotfiles/zsh/envs
 source /home/neolux/dotfiles/zsh/tasker
 source /home/neolux/dotfiles/zsh/initer
 source /home/neolux/dotfiles/zsh/passer
+source /home/neolux/dotfiles/zsh/logger
 
 #initer ros2
 initer conda
