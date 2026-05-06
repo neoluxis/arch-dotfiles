@@ -121,5 +121,8 @@ initer conda
 # o pipefail: one sub-cmd fail causes whole pipe fail. last cmd status by default
 # set -euo pipefail
 
-neofetch
+#neofetch
 
+
+# Added by LM Studio CLI tool (lms)
+export PATH="$PATH:/home/neolux/.lmstudio/bin"
