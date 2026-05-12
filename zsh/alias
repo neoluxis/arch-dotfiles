@@ -2,8 +2,8 @@ alias ll='ls -lah'
 alias cls='clear'
 alias fetch='neofetch | lolcat'
 
-alias paclean='yay -Scc && paru -Scc'
-alias pacleanne='yay $(yay -Qtdq) -Rddscun && paru $(paru -Qtdq) -Rddscun'
+alias paclean='yay -Scc'
+alias pacleanne='yay $(yay -Qtdq) -Rddscun'
 alias pacleanna='paclean; pacleanne || echo No Package got to clean'
 
 alias ccpfetch='neofetch --source ~/.config/neofetch/ccp_ascii | lolcat'
