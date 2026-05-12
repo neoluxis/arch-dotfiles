@@ -1,3 +1,8 @@
 export PATH=.:$PATH
 export PATH=/home/neolux/.local/bin:$PATH
 export PATH=/home/neolux/.local/share/JetBrains/Toolbox/scripts:$PATH
+
+export WINEDEBUG=-all
+
+export OLLAMA_HOST=8.149.134.37:11434
+

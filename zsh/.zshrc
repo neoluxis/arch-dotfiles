@@ -124,3 +124,8 @@ initer conda
 
 neofetch
 
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/neolux/.lmstudio/bin"
+# End of LM Studio CLI section
+
