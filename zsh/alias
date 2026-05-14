@@ -33,3 +33,6 @@ alias mwin=x86_64-w64-mingw32-wine
 alias scr='scrcpy -b 40M -m 0 --video-codec=h265'
 alias scrd='scr > /dev/null 2>&1 &'
 
+# Solve MATLAB shared lib
+alias matlab='LD_PRELOAD=/usr/lib/libstdc++.so:/usr/lib/libgnutls.so matlab'
+

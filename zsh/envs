@@ -6,3 +6,10 @@ export WINEDEBUG=-all
 
 export OLLAMA_HOST=8.149.134.37:11434
 
+# task spooler email config
+export TS_MAILTO=neolux_lee@outlook.com
+
+# Docker rootless
+export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
+
+
